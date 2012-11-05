@@ -34,7 +34,7 @@
     	        	}
     	        	
     	        	// Failure callback function
-    	            var fnFailure = function DLCMT__onOK_failure(p_data)
+    	            var fnFailure = function DLCCH__onOK_failure(p_data)
     	            {
     	               Alfresco.util.PopupManager.displayMessage(
     	               {
@@ -43,11 +43,11 @@
     	            };
     	            
     	            // Success callback function
-    	            var fnSuccess = function DLCMT__onOK_success(p_data)
+    	            var fnSuccess = function DLCCH__onOK_success(p_data)
     	            {
     	               Alfresco.util.PopupManager.displayMessage(
     	               {
-    	                  text: this.msg("message.sucess")
+    	                  text: this.msg("message.success")
     	               });
     	            };
     	        	
@@ -93,14 +93,7 @@
     	                  }
     	               }
     	            });
-    	        	
-    	        	
-    	        	Alfresco.util.PopupManager.displayMessage(
-    	            {
-    	               text: this.msg("message.clipboard.copy.success")
-    	            });
-    	        	
-    	        	
+    	        	    	        	
     	        }
     	    });
     
