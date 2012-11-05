@@ -30,6 +30,19 @@
     
     YAHOO.Bubbling.fire("registerAction",
     {
+        actionName: "onActionClipboardMoveHere",
+        fn: function ASC_onActionClipboardMoveHere(folder) {
+        	Alfresco.util.PopupManager.displayMessage(
+            {
+               text: this.msg("message.clipboard.move")
+            });
+        	runClipboardAction(this, folder, "move-to");
+        	    	        	
+        }
+    });
+    
+    YAHOO.Bubbling.fire("registerAction",
+    {
         actionName: "onActionClipboardLinkHere",
         fn: function ASC_onActionClipboardLinkHere(folder) {
         	Alfresco.util.PopupManager.displayMessage(

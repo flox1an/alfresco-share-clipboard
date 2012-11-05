@@ -25,6 +25,15 @@
 	            </permissions>
 			</action>
 			
+			<action id="org_alfresco_clipboard-move_here" type="javascript"
+			    label="action.clipboard.move.here"
+				icon="clipboard-move-here">
+				<param name="function">onActionClipboardMoveHere</param>
+					<permissions>
+	               <permission allow="true">Write</permission>
+	            </permissions>
+			</action>
+			
 			<action id="org_alfresco_clipboard-link_here" type="javascript"
 			    label="action.clipboard.link.here"
 				icon="clipboard-link-here">
