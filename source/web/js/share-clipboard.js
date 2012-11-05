@@ -6,6 +6,20 @@
  */
 (function()
 {
+	var SHARE_CLIPBOARD_KEY = "Share.Clipboard";
+	
+	var getClipboardData = function Clipboard_getClipboardData() {
+	  	  var storedData = localStorage.getItem(SHARE_CLIPBOARD_KEY), data = {};
+		  if (storedData !== undefined) {
+	    	  var data = JSON.parse(storedData);
+		  }
+		  return data;
+	} 
+
+	var storeClipboardData = function Clipboard_storeClipboardData(data) {
+		localStorage.setItem(SHARE_CLIPBOARD_KEY, JSON.stringify(data));
+	} 
+	
    /**
     * Clipboard constructor.
     *
@@ -20,42 +34,36 @@
 
    YAHOO.extend(Alfresco.service.Clipboard, Alfresco.service.BaseService,
    {
-      /**
-       * Get the complete copy of the currently cached user preferences. This value is set once per page load - a component
-       * should retrieve this once onReady() but not assume the state is correct after that. The component should maintain
-       * its own local copies of values as modified by set(), add() or remote() operations until the next page refresh.
-       *
-       * @method get
-       */
       get: function Clipboard_get(nodeRef)
       {
-    	  
+    	  var data = getClipboardData();
+    	  return data[nodeRef];
       },
 
-      /**
-       * Adds a value to a user specific property that is treated as a multi value.
-       * Since arrays aren't supported in the webscript we store multiple values using a comma separated string.
-       *
-       * @method add
-       * @param name {string} The name of the property to set
-       * @param value {object} The value of the property to set
-       * @param responseConfig {object} A config object with only success and failure callbacks and messages
-       */
       add: function Clipboard_add(entry)
       {
-    	  
+    	  var data = getClipboardData();
+    	  data[entry.nodeRef] = entry;
+    	  storeClipboardData(data);
       },
       
       getAll : function Clipboard_getAll() {
-    	  
+    	  var data = getClipboardData();
+    	  var list = [];
+    	  for(var key in data) {
+    		  list.push(data[key]);
+    	  }
+    	  return list;
       },
 
       remove : function Clipboard_remove(nodeRef) {
-    	  
+    	  var data = getClipboardData();
+    	  delete data[nodeRef];
+    	  storeClipboardData(data);
       },
 
       removeAll : function Clipboard_removeAll() {
-    	  
+    	  storeClipboardData({});
       }
    });
 })();
