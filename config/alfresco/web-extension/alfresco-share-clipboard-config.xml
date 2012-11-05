@@ -24,6 +24,15 @@
 	               <permission allow="true">Write</permission>
 	            </permissions>
 			</action>
+			
+			<action id="org_alfresco_clipboard-link_here" type="javascript"
+			    label="action.clipboard.link.here"
+				icon="clipboard-link-here">
+				<param name="function">onActionClipboardLinkHere</param>
+					<permissions>
+	               <permission allow="true">Write</permission>
+	            </permissions>
+			</action>
 		</actions>
 
 		<actionGroups>
@@ -36,9 +45,11 @@
 			
 			<actionGroup id="folder-browse">
 				<action index="155" id="org_alfresco_clipboard-copy_here" icon="folder-copy-to"/>
+				<action index="156" id="org_alfresco_clipboard-link_here" icon="folder-copy-to"/>
 			</actionGroup>
 			<actionGroup id="folder-details">
 				<action index="135" id="org_alfresco_clipboard-copy_here" icon="folder-copy-to"/>
+				<action index="136" id="org_alfresco_clipboard-link_here" icon="folder-copy-to"/>
 			</actionGroup>
 		</actionGroups>
 <!--			
