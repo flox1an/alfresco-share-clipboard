@@ -52,6 +52,7 @@
     	  if (entry.nodeRef) {
         	  data[entry.nodeRef] = entry;
         	  storeClipboardData(data);
+        	  YAHOO.Bubbling.fire("clipboardChanged");
     	  }
     	  else {
     		  throw "Entry does not have a nodeRef property!";
@@ -71,10 +72,12 @@
     	  var data = getClipboardData();
     	  delete data[nodeRef];
     	  storeClipboardData(data);
+    	  YAHOO.Bubbling.fire("clipboardChanged");
       },
 
       removeAll : function Clipboard_removeAll() {
     	  storeClipboardData({});
+    	  YAHOO.Bubbling.fire("clipboardChanged");
       }
    });
 })();
