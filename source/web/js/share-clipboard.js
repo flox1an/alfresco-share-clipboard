@@ -29,8 +29,8 @@
        */
       get: function Clipboard_get(nodeRef)
       {
+    	  
       },
-      
 
       /**
        * Adds a value to a user specific property that is treated as a multi value.
@@ -41,8 +41,9 @@
        * @param value {object} The value of the property to set
        * @param responseConfig {object} A config object with only success and failure callbacks and messages
        */
-      add: function Clipboard_add(name, value, responseConfig)
+      add: function Clipboard_add(entry)
       {
+    	  
       },
       
       getAll : function Clipboard_getAll() {
