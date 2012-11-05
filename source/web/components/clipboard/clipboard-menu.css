@@ -8,6 +8,10 @@
    background-image: url(../documentlibrary/actions/document-move-to-16.png);
 }
 
+.yuimenu .bd li.clipboard-link .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-link-to-16.png);
+}
+
 .yuimenu .bd li.clipboard-clear .yuimenuitemlabel {
    background-image: url(../documentlibrary/actions/document-delete-16.png);
 }

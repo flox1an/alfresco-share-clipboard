@@ -29,6 +29,7 @@
           var container = YAHOO.util.Selector.query(".header-bar")[0];
           var menu = ([ 
                        { text : this.msg("clipboard.action.copy.here"), classname: "clipboard-copy", onclick : { fn: this.onCopyHere, scope: this } },
+                       { text : this.msg("clipboard.action.link.here"), classname: "clipboard-link", onclick : { fn: this.onLinkHere, scope: this } },
                        { text : this.msg("clipboard.action.move.here"), classname: "clipboard-move", onclick : { fn: this.onMoveHere, scope: this } },
                        { text : this.msg("clipboard.action.clear"), classname: "clipboard-clear", onclick : { fn: this.onClearClipboard, scope: this } }
           	 ]);
@@ -65,11 +66,15 @@
       },
       
       onCopyHere : function ClipboardMenu_onCopyHere() {
-    	  this._copyOrMove({copy: true});
+    	  this._copyOrMove({mode: "copy"});
+      },
+      
+      onLinkHere : function ClipboardMenu_onLinkHere() {
+    	  this._copyOrMove({mode: "link"});
       },
       
       onMoveHere : function ClipboardMenu_onMoveHere() {
-    	   this._copyOrMove({copy: false});
+    	   this._copyOrMove({mode: "move"});
       },
       
       onClearClipboard : function ClipboardMenu_onClearClipboard() {
@@ -77,11 +82,13 @@
     	  clip.removeAll();
       },
       
-      _copyOrMove : function ClipboardMenu__copyOrMove(copy) {
+      _copyOrMove : function ClipboardMenu__copyOrMove(action) {
+    	  
+    	var mode = action.mode;
 	
 	    Alfresco.util.PopupManager.displayMessage(
         {
-           text: this.msg(copy?"message.clipboard.copy":"message.clipboard.move")
+           text: this.msg("message.clipboard."+mode)
         });
 	    
 		//get clipboard contents
@@ -139,7 +146,7 @@
 	       webscript:
 	       {
 	          method: Alfresco.util.Ajax.POST,
-	          name: (copy?"copy-to/node/{nodeRef}":"move-to/node/{nodeRef}"),
+	          name: mode + "-to/node/{nodeRef}",
 	          params:
 	          {
 	             nodeRef: folderRef.uri
