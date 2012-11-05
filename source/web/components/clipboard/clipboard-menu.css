@@ -1,0 +1,23 @@
+
+.yuimenu .bd li.clipboard-copy .yuimenuitemlabel
+{
+   background-image: url(../documentlibrary/actions/document-copy-to-16.png);
+}
+
+.yuimenu .bd li.clipboard-move .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-move-to-16.png);
+}
+
+.yuimenu .bd li.clipboard-clear .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-delete-16.png);
+}
+
+.yuimenu .bd li .yuimenuitemlabel {
+	background-position: 10px 50%;
+	background-repeat: no-repeat;
+	display: block;
+	padding:2px;
+	padding-left: 32px;
+	padding-right: 10px;
+text-decoration: none;	
+}

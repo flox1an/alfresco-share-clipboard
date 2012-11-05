@@ -28,9 +28,9 @@
     	  
           var container = YAHOO.util.Selector.query(".header-bar")[0];
           var menu = ([ 
-                       { text : this.msg("clipboard.action.copy.here"), onclick : { fn: this.onCopyHere, scope: this } },
-                       { text : this.msg("clipboard.action.move.here"), onclick : { fn: this.onMoveHere, scope: this } },
-                       { text : this.msg("clipboard.action.clear"), onclick : { fn: this.onClearClipboard, scope: this } }
+                       { text : this.msg("clipboard.action.copy.here"), classname: "clipboard-copy", onclick : { fn: this.onCopyHere, scope: this } },
+                       { text : this.msg("clipboard.action.move.here"), classname: "clipboard-move", onclick : { fn: this.onMoveHere, scope: this } },
+                       { text : this.msg("clipboard.action.clear"), classname: "clipboard-clear", onclick : { fn: this.onClearClipboard, scope: this } }
 /*
                        { text : "Refresh Repository Webscripts", classname: "refresh-menuitem", onclick : { fn: this.onRefreshRepoWebscripts, scope: this } },
           	      { text : "Refresh Share Webscripts", classname: "refresh-menuitem", onclick : { fn: this.onRefreshShareWebscripts, scope: this } },
