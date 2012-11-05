@@ -74,17 +74,100 @@
           
       },
       
-      onMoveHere : function ClipboardMenu_onMoveHere() {
-    	  
+      onCopyHere : function ClipboardMenu_onCopyHere() {
+    	  this._copyOrMove({copy: true});
       },
       
       onMoveHere : function ClipboardMenu_onMoveHere() {
-    	  
+    	   this._copyOrMove({copy: false});
       },
       
       onClearClipboard : function ClipboardMenu_onClearClipboard() {
     	  
-      }
+      },
+      
+      _copyOrMove : function ClipboardMenu__copyOrMove(copy) {
+	
+	    Alfresco.util.PopupManager.displayMessage(
+        {
+           text: this.msg(copy?"message.clipboard.copy":"message.clipboard.move")
+        });
+	    
+		//get clipboard contents
+		var clipboardService = new Alfresco.service.Clipboard();
+		
+		var nodes = clipboardService.getAll();
+		var nodeRefs = [];
+		for (var i = 0; i < nodes.length; i++){
+			nodeRefs.push(nodes[i].nodeRef);
+		}
+		
+		// Failure callback function
+	    var fnFailure = function ASCCOM__onOK_failure(p_data)
+	    {
+	       Alfresco.util.PopupManager.displayMessage(
+	       {
+	          text: this.msg("message.failure")
+	       });
+	    };
+	    
+	    // Success callback function
+	    var fnSuccess = function ASCCOM__onOK_success(p_data)
+	    {
+	       Alfresco.util.PopupManager.displayMessage(
+	       {
+	          text: this.msg("message.success")
+	       });
+	       
+	       YAHOO.Bubbling.fire("metadataRefresh");
+	    };
+		
+		var doclist = Alfresco.util.ComponentManager.find({name : "Alfresco.DocumentList"})[0];
+		
+		var folderRef = new Alfresco.util.NodeRef(doclist.doclistMetadata.parent.nodeRef);
+		
+		// Construct the data object for the genericAction call
+	    doclist.modules.actions.genericAction(
+	    {
+	       success:
+	       {
+	          callback:
+	          {
+	             fn: fnSuccess,
+	             scope: this
+	          }
+	       },
+	       failure:
+	       {
+	          callback:
+	          {
+	             fn: fnFailure,
+	             scope: this
+	          }
+	       },
+	       webscript:
+	       {
+	          method: Alfresco.util.Ajax.POST,
+	          name: (copy?"copy-to/node/{nodeRef}":"move-to/node/{nodeRef}"),
+	          params:
+	          {
+	             nodeRef: folderRef.uri
+	          }
+	       },
+	       wait:
+	       {
+	          message: this.msg("message.please-wait")
+	       },
+	       config:
+	       {
+	          requestContentType: Alfresco.util.Ajax.JSON,
+	          dataObj:
+	          {
+	             nodeRefs: nodeRefs
+	          }
+	       }
+	    });
+	}
             
    });
    
