@@ -31,6 +31,7 @@
                        { text : this.msg("clipboard.action.copy.here"), classname: "clipboard-copy", onclick : { fn: this.onCopyHere, scope: this } },
                        { text : this.msg("clipboard.action.link.here"), classname: "clipboard-link", onclick : { fn: this.onLinkHere, scope: this } },
                        { text : this.msg("clipboard.action.move.here"), classname: "clipboard-move", onclick : { fn: this.onMoveHere, scope: this } },
+                       { text : this.msg("clipboard.action.download"), classname: "clipboard-download", onclick : { fn: this.onDownloadClipboard, scope: this } },
                        { text : this.msg("clipboard.action.clear"), classname: "clipboard-clear", onclick : { fn: this.onClearClipboard, scope: this } }
           	 ]);
           
@@ -75,6 +76,19 @@
       
       onMoveHere : function ClipboardMenu_onMoveHere() {
     	   this._copyOrMove({mode: "move"});
+      },
+      
+      onDownloadClipboard : function ClipboardMenu_onDownloadClipboard() {
+    	  var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
+          config = { nodesToArchive: [] };
+    	  var clipboardService = new Alfresco.service.Clipboard();
+  		
+	  	 var nodes = clipboardService.getAll();
+	  		for (var i = 0; i < nodes.length; i++){
+	  			 config.nodesToArchive.push({"nodeRef": nodes[i].nodeRef})
+	  		}
+	     
+	      downloadDialog.show(config);
       },
       
       onClearClipboard : function ClipboardMenu_onClearClipboard() {
