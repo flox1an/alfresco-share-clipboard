@@ -3,8 +3,16 @@
     {
         actionName: "onActionClipboardAddDocument",
         fn: function ASC_onActionClipboardAddDocument(file) {
-        	alert("Hi!");
-        	console.log(file);
+        	      	
+        	var entry = {};
+        	entry.nodeRef = file.nodeRef;
+        	entry.name = file.displayName;
+        	entry.title = entry.name;
+        	
+        	var clip = new Alfresco.service.Clipboard();
+        	clip.add(entry);
+        
         }
     });
+    
 })();

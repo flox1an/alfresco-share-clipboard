@@ -13,7 +13,7 @@
 			<action id="org_alfresco_clipboard-add_document" type="javascript"
 			    label="action.clipboard.add.document"
 				icon="add-to-clipboard">
-				<param name="function">	</param>
+				<param name="function">onActionClipboardAddDocument</param>
 			</action>
 		</actions>
 
