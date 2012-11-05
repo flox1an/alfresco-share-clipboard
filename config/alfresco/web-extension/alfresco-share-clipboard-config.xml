@@ -15,6 +15,15 @@
 				icon="add-to-clipboard">
 				<param name="function">onActionClipboardAddDocument</param>
 			</action>
+			
+			<action id="org_alfresco_clipboard-copy_here" type="javascript"
+			    label="action.clipboard.copy.here"
+				icon="clipboard-copy-here">
+				<param name="function">onActionClipboardCopyHere</param>
+					<permissions>
+	               <permission allow="true">Write</permission>
+	            </permissions>
+			</action>
 		</actions>
 
 		<actionGroups>
@@ -23,6 +32,13 @@
 			</actionGroup>
 			<actionGroup id="document-details">
 				<action index="400" id="org_alfresco_clipboard-add_document" />
+			</actionGroup>
+			
+			<actionGroup id="folder-browse">
+				<action index="155" id="org_alfresco_clipboard-copy_here" icon="folder-copy-to"/>
+			</actionGroup>
+			<actionGroup id="folder-details">
+				<action index="135" id="org_alfresco_clipboard-copy_here" icon="folder-copy-to"/>
 			</actionGroup>
 		</actionGroups>
 <!--			
