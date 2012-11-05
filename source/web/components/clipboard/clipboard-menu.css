@@ -1,0 +1,28 @@
+/* Sites Module */
+
+/* Drop-down menus */
+
+
+.header .yui-menu-button.devtools-menu .first-child {
+   background-image: url(devtools16.png);
+}
+
+.header .yuimenu .bd li.refresh-menuitem .yuimenuitemlabel
+{
+   background-image: url(refresh16.png);
+}
+
+.header .yuimenu .bd li.jsconsole-menuitem .yuimenuitemlabel
+{
+   background-image: url(../../../components/documentlibrary/actions/open-in-jsconsole-16.png);
+}
+
+.header .yuimenu .bd li.debugger-menuitem .yuimenuitemlabel
+{
+   background-image: url(debugger16.png);
+}
+
+.header .yuimenu .bd li.surfbug-menuitem .yuimenuitemlabel
+{
+   background-image: url(surfbug16.png);
+}
