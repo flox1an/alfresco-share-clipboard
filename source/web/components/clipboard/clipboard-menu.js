@@ -13,7 +13,7 @@
 
    Alfresco.module.Clipboard = function(htmlId)
    {
-      return Alfresco.module.DevTools.superclass.constructor.call(this, "Alfresco.module.Clipboard", htmlId, ["button", "menu", "container"]);
+      return Alfresco.module.Clipboard.superclass.constructor.call(this, "Alfresco.module.Clipboard", htmlId, ["button", "menu", "container"]);
    };
 
    YAHOO.extend(Alfresco.module.Clipboard, Alfresco.component.Base,
@@ -65,6 +65,12 @@
                       container: container.id
                    });      	  
           this.widgets.clipboardButton.addClass("clipboard-menu");
+          
+          YAHOO.Bubbling.subscribe("clipboardChanged", function(layer, args) {
+        	  var clip = new Alfresco.service.Clipboard();
+        	  var clipsize = clip.getAll().length;
+        	  this.widgets.clipboardButton.set('disabled', clipsize == 0);
+          }, this);
           
       },
       
