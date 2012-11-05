@@ -67,11 +67,24 @@
           this.widgets.clipboardButton.addClass("clipboard-menu");
           
           YAHOO.Bubbling.subscribe("clipboardChanged", function(layer, args) {
-        	  var clip = new Alfresco.service.Clipboard();
-        	  var clipsize = clip.getAll().length;
-        	  this.widgets.clipboardButton.set('disabled', clipsize == 0);
+        	  this.updateButtonState();
           }, this);
           
+          this.updateButtonState();
+          
+      },
+      
+      updateButtonState : function ClipboardMenu_updateButtonState() {
+    	  var clip = new Alfresco.service.Clipboard();
+    	  var clipsize = clip.getAll().length;
+    	  this.widgets.clipboardButton.set('disabled', clipsize == 0);
+    	  
+    	 if (clipsize == 0) {
+    		 this.widgets.clipboardButton.set("label", "Clipboard");
+    	 }
+    	 else {
+    		 this.widgets.clipboardButton.set("label", "Clipboard (" + clipsize + ")");
+    	 }
       },
       
       onMoveHere : function ClipboardMenu_onMoveHere() {
@@ -83,7 +96,8 @@
       },
       
       onClearClipboard : function ClipboardMenu_onClearClipboard() {
-    	  
+    	  var clip = new Alfresco.service.Clipboard();
+    	  clip.removeAll();
       }
             
    });
