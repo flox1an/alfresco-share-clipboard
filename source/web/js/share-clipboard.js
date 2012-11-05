@@ -10,14 +10,20 @@
 	
 	var getClipboardData = function Clipboard_getClipboardData() {
 	  	  var storedData = localStorage.getItem(SHARE_CLIPBOARD_KEY), data = {};
-		  if (storedData !== undefined) {
+		  if (storedData) {
 	    	  var data = JSON.parse(storedData);
+	    	  
+	    	  if (data !== undefined) {
+	    		  return data;
+	    	  }
 		  }
-		  return data;
+		  return {};
 	} 
 
 	var storeClipboardData = function Clipboard_storeClipboardData(data) {
-		localStorage.setItem(SHARE_CLIPBOARD_KEY, JSON.stringify(data));
+		if (data !== undefined) {
+			localStorage.setItem(SHARE_CLIPBOARD_KEY, JSON.stringify(data));
+		}
 	} 
 	
    /**
@@ -43,8 +49,13 @@
       add: function Clipboard_add(entry)
       {
     	  var data = getClipboardData();
-    	  data[entry.nodeRef] = entry;
-    	  storeClipboardData(data);
+    	  if (entry.nodeRef) {
+        	  data[entry.nodeRef] = entry;
+        	  storeClipboardData(data);
+    	  }
+    	  else {
+    		  throw "Entry does not have a noreRef property!";
+    	  }
       },
       
       getAll : function Clipboard_getAll() {
