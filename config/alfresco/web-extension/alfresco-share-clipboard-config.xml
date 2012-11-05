@@ -1,4 +1,38 @@
 <alfresco-config>
    
-   
+
+	<config evaluator="string-compare" condition="DocLibCustom">
+		<dependencies>
+			<js src="components/clipboard/clipbaord-actions.js" />
+		</dependencies>
+	</config>
+
+	<config evaluator="string-compare" condition="DocLibActions">
+		<actions>
+			<action id="org_alfresco_clipboard-add_document" type="javascript"
+			    label="action.clipboard.add.document"
+				icon="add-to-clipboard">
+				<param name="function">	</param>
+			</action>
+		</actions>
+
+		<actionGroups>
+			<actionGroup id="document-browse">
+				<action index="400" id="org_alfresco_clipboard-add_document" />
+			</actionGroup>
+			<actionGroup id="document-details">
+				<action index="400" id="org_alfresco_clipboard-add_document" />
+			</actionGroup>
+		</actionGroups>
+<!--			
+			<actionGroup id="folder-browse">
+				<action index="400" id="de_fme_jsconsole-open-in-jsconsole" />
+			</actionGroup>
+			<actionGroup id="folder-details">
+				<action index="400" id="de_fme_jsconsole-open-in-jsconsole" />
+			</actionGroup>
+		</actionGroups>
+-->
+	</config>
+	   
 </alfresco-config>   
