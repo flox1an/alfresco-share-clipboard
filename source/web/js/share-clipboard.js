@@ -54,7 +54,7 @@
         	  storeClipboardData(data);
     	  }
     	  else {
-    		  throw "Entry does not have a noreRef property!";
+    		  throw "Entry does not have a nodeRef property!";
     	  }
       },
       

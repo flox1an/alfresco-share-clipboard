@@ -1,0 +1,20 @@
+<extension>
+	<modules>
+		<module>
+			<id>Alfresco Share Clipboard</id>
+			<components>
+				<component>
+					<scope>global</scope>
+					<region-id>header</region-id>
+					<source-id>global</source-id>
+					<sub-components>
+						<sub-component id="alfresco-share-clipboard-menu">
+							<url>/components/clipboard/menu</url>
+						</sub-component>
+					</sub-components>
+				</component>
+			</components>
+		</module>
+	</modules>
+</extension>
+
