@@ -1,28 +1,14 @@
 
-Javascript Console Admin Console component for Alfresco Share
+Alfresco Share Clipbaord
 =============================================================
 
-Author: Florian Maul
-
-This project defines a Javascript Console component for Share's Administration Console,
-that enables the execution of arbitrary javascript code in the repository. 
-
+This project defines a Share Clipboard that allows collecting documents in Alfresco
+Share.
 
 Installation
 ------------
 
-The component has been developed to install on top of an existing Alfresco
-3.4 or 4.0 installation. There are two different version in this archive with
-a specific folder for each of the Alfresco version.
-
-When you have chosen the correct folder (3.4.x or 4.0.x) for your Alfresco version
-you'll find two jar files within that folder. The javascript-console-repo.jar needs
-to be copied into the Alfresco repository:
-
-  tomcat/webapps/alfresco/WEB-INF/lib/
-  
-The other file javascript-console-share.jar needs to be copied to the 
-corresponding folder in the Share webapp:
+The alfresco-shrare-clipboard.jar needs to be copied into this folder in the Share webapp:
 
   tomcat/webapps/share/WEB-INF/lib/
   

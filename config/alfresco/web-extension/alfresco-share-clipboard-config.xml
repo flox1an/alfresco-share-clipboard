@@ -3,7 +3,8 @@
 
 	<config evaluator="string-compare" condition="DocLibCustom">
 		<dependencies>
-			<js src="components/clipboard/clipbaord-actions.js" />
+			<js src="components/clipboard/clipboard-actions.js" />
+			<js src="js/share-clipboard.js" />
 		</dependencies>
 	</config>
 
