@@ -12,6 +12,10 @@
    background-image: url(../documentlibrary/actions/document-link-to-16.png);
 }
 
+.yuimenu .bd li.clipboard-download .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-download-16.png);
+}
+
 .yuimenu .bd li.clipboard-clear .yuimenuitemlabel {
    background-image: url(../documentlibrary/actions/document-delete-16.png);
 }
