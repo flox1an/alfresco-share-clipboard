@@ -1,0 +1,40 @@
+
+.yuimenu .bd li.clipboard-copy .yuimenuitemlabel
+{
+   background-image: url(../documentlibrary/actions/document-copy-to-16.png);
+}
+
+.yuimenu .bd li.clipboard-move .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-move-to-16.png);
+}
+
+.yuimenu .bd li.clipboard-link .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-link-to-16.png);
+}
+
+.yuimenu .bd li.clipboard-download .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-download-16.png);
+}
+
+.yuimenu .bd li.clipboard-clear .yuimenuitemlabel {
+   background-image: url(../documentlibrary/actions/document-delete-16.png);
+}
+
+.yuimenu .bd li .yuimenuitemlabel {
+	background-position: 10px 50%;
+	background-repeat: no-repeat;
+	display: block;
+	padding: 2px;
+	padding-left: 32px;
+	padding-right: 10px;
+    text-decoration: none;	
+}
+
+.clipboard-menu .first-child {
+   background-image: url(../documentlibrary/actions/add-to-clipboard-16.png);
+   background-repeat: no-repeat;
+background-color: transparent;
+background-position: 6px 4px;
+background-repeat: no-repeat;
+padding-left: 16px;   
+}
