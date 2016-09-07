@@ -10,12 +10,12 @@
     <description>Manages the lifecycle of the Alfresco Share Clipboard Repository AMP (Alfresco Module Package)</description>
 
     <parent>
-        <groupId>org.alfresco.maven</groupId>
-        <artifactId>alfresco-sdk-parent</artifactId>
-        <version>2.2.0</version>
+        <groupId>de.fmaul</groupId>
+        <artifactId>alfresco-clipboard</artifactId>
+        <version>1.0.0</version>
     </parent>
 
-    <!-- 
+    <!--
         SDK properties have sensible defaults in the SDK parent,
         but you can override the properties below to use another version.
         For more available properties see the alfresco-sdk-parent POM.
@@ -36,7 +36,7 @@
         -->
     </properties>
 
-    <!-- Here we realize the connection with the Alfresco selected platform 
+    <!-- Here we realize the connection with the Alfresco selected platform
         (e.g.version and edition) -->
     <dependencyManagement>
         <dependencies>
