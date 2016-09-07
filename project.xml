@@ -1,5 +1,0 @@
-<project basedir="." default="dist-jar" name="Alfresco Share Clipboard">
-    <!-- Import properties and targets from stock build script -->
-    <import file="build.xml" />
-
-</project>
