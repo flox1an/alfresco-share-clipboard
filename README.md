@@ -1,13 +1,28 @@
 # Alfresco Share Clipboard
 
-This project defines a Share Clipboard that allows collecting documents in Alfresco
-Share.
+[![Build Status](https://travis-ci.org/fmaul/alfresco-share-clipboard.svg?branch=master)](https://travis-ci.org/fmaul/alfresco-share-clipboard)
+
+This extensions adds a Clipboard to the Alfresco Share document library that allows collecting documents.
+
+### Usage
+
+Use the document library action to add files to the clipboard
+
+![Clipboard action in the document libraray](screenshots/action.png)
+
+Files are added to the clipboard view in the left sidebar of the document library
+
+![Clipboard view in the sidebar](screenshots/clipboard-view.png)
+
+An additional clipboard menu can be used to copy, move, link or zip the clipboard contents.
+
+![Clipboard menu in the toolbar](screenshots/clipboard-menu.png)
 
 ## Building
 
-To build the individual AMP files, run the following command from the projects directory.
-* Project alfresco-clipboard-repo: `mvn clean package`
-* Project alfresco-clipboard-share: `mvn clean package`
+To build both the Repository and Share AMP files run
+  
+    mvn clean package
 
 ### Local development system
 
