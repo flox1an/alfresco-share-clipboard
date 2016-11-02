@@ -20,6 +20,10 @@
    background-image: url(../documentlibrary/actions/document-delete-16.png);
 }
 
+.yuimenu .bd li.clipboard-send-attachment .yuimenuitemlabel {
+   background-image: url(../images/social-email-16.png);
+}
+
 .yuimenu .bd li .yuimenuitemlabel {
 	background-position: 10px 50%;
 	background-repeat: no-repeat;
