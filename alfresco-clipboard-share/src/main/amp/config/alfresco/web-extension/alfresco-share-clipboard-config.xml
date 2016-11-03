@@ -1,10 +1,8 @@
 <alfresco-config>
-   
 
 	<config evaluator="string-compare" condition="DocLibCustom">
 		<dependencies>
 			<js src="components/clipboard/clipboard-actions.js" />
-			<js src="js/share-clipboard.js" />
 		</dependencies>
 	</config>
 
@@ -15,7 +13,7 @@
 				icon="add-to-clipboard">
 				<param name="function">onActionClipboardAddDocument</param>
 			</action>
-			
+
 			<action id="org_alfresco_clipboard-copy_here" type="javascript"
 			    label="action.clipboard.copy.here"
 				icon="clipboard-copy-here">
@@ -24,7 +22,7 @@
 	               <permission allow="true">Write</permission>
 	            </permissions>
 			</action>
-			
+
 			<action id="org_alfresco_clipboard-move_here" type="javascript"
 			    label="action.clipboard.move.here"
 				icon="clipboard-move-here">
@@ -33,7 +31,7 @@
 	               <permission allow="true">Write</permission>
 	            </permissions>
 			</action>
-			
+
 			<action id="org_alfresco_clipboard-link_here" type="javascript"
 			    label="action.clipboard.link.here"
 				icon="clipboard-link-here">
@@ -51,7 +49,7 @@
 			<actionGroup id="document-details">
 				<action index="400" id="org_alfresco_clipboard-add_document" />
 			</actionGroup>
-			
+
 			<actionGroup id="folder-browse">
 				<action index="155" id="org_alfresco_clipboard-copy_here" icon="folder-copy-to"/>
 				<action index="156" id="org_alfresco_clipboard-link_here" icon="folder-copy-to"/>
@@ -63,15 +61,7 @@
 				<action index="137" id="org_alfresco_clipboard-move_here" icon="folder-copy-to"/>
 			</actionGroup>
 		</actionGroups>
-<!--			
-			<actionGroup id="folder-browse">
-				<action index="400" id="de_fme_jsconsole-open-in-jsconsole" />
-			</actionGroup>
-			<actionGroup id="folder-details">
-				<action index="400" id="de_fme_jsconsole-open-in-jsconsole" />
-			</actionGroup>
-		</actionGroups>
--->
+
 	</config>
-	   
-</alfresco-config>   
+
+</alfresco-config>

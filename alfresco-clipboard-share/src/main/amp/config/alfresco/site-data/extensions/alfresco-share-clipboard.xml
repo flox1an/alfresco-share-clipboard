@@ -2,6 +2,7 @@
 	<modules>
 		<module>
 			<id>Alfresco Share Clipboard</id>
+			<auto-deploy>true</auto-deploy>
 			<components>
 				<component>
 					<scope>template</scope>
@@ -14,7 +15,17 @@
 					</sub-components>
 				</component>
 			</components>
+			<customizations>
+					<customization>
+							<targetPackageRoot>org.alfresco.share.pages.faceted-search</targetPackageRoot>
+							<sourcePackageRoot>de.fmaul.clipboard.faceted-search</sourcePackageRoot>
+					</customization>
+					<customization>
+							<targetPackageRoot>org.alfresco.components.head</targetPackageRoot>
+							<sourcePackageRoot>de.fmaul.clipboard.head</sourcePackageRoot>
+					</customization>
+			</customizations>
 		</module>
+
 	</modules>
 </extension>
-
