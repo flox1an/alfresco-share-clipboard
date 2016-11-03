@@ -14,6 +14,16 @@
 						</sub-component>
 					</sub-components>
 				</component>
+				<component>
+					<scope>template</scope>
+					<region-id>tags</region-id>
+					<source-id>documentlibrary</source-id>
+					<sub-components>
+						<sub-component id="alfresco-share-clipboard-list" index="1000">
+							<url>/components/documentlibrary/clipboard</url>
+						</sub-component>
+					</sub-components>
+				</component>
 			</components>
 			<customizations>
 					<customization>
