@@ -67,39 +67,6 @@ var clipboardMenu = {
                 iconClass: "alf-delete-icon",
                 publishTopic: "ALF_CLIPBOARD_ACTION_CLEAR"
             }
-        }, {
-            name: "alfresco/menus/AlfMenuItem",
-            config: {
-                label: msg.get("clipboard contents"),
-                widgets: [{
-                    name: "alfresco\/lists\/AlfList",
-                    config: {
-                        loadDataPublishTopic: "ALF_CLIPBOARD_GET",
-                        reloadDataTopic: "ALF_CLIPBOARD_CHANGED",
-                        widgets: [{
-                            name: "alfresco/lists/views/AlfListView",
-                            config: {
-                                widgets: [{
-                                    name: "alfresco/lists/views/layouts/Row",
-                                    config: {
-                                        widgets: [propertyCell, deleteActionCell]
-                                    }
-                                }]
-                            }
-                        }],
-                        visibilityConfig: {
-                            initialValue: true,
-                            rules: [{
-                                topic: "ALF_CLIPBOARD_SHOW",
-                                attribute: "reveal",
-                                is: [true],
-                                strict: true
-                            }]
-                        }
-                    }
-
-                }]
-            }
         }]
     }
 
