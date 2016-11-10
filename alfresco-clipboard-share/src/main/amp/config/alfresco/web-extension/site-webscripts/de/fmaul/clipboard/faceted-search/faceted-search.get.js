@@ -46,9 +46,8 @@ var deleteActionCell = {
     }
 };
 
-
 var showWhenClipboardNotEmpty = {
-    initialValue: true,
+    initialValue: false,
     rules: [{
         topic: "ALF_CLIPBOARD_SHOW",
         attribute: "reveal",
@@ -78,7 +77,7 @@ var clipboardMenu = {
                 iconClass: "alf-social-email-icon",
                 publishTopic: "ALF_CLIPBOARD_ACTION_SEND_EMAIL"
             }
-        },{
+        }, {
             name: "alfresco/menus/AlfMenuItem",
             config: {
                 label: msg.get("action.clipboard.clear"),
@@ -97,30 +96,37 @@ if (searchMenuBar != null) {
     searchMenuBar.config.widgets.unshift(clipboardMenu);
 }
 
-
 if (pageVertical != undefined) {
     pageVertical.config.widgets.splice(2, 0, {
-        "id": "FCTSRCH_TOP_MENU_HORIZONTAL",
-        "name": "alfresco\/layout\/HorizontalWidgets",
-        "config": {
-            "widgets": [{
-                "id": "FCTSRCH_TOP_MENU_VERTICAL",
-                "name": "alfresco\/layout\/VerticalWidgets",
-                "config": {
-                    "widgets": [topMenu, searchForm]
-                }
-            }, {
-                name: "alfresco\/lists\/AlfList",
+        id: "FCTSRCH_TOP_MENU_HORIZONTAL",
+        name: "alfresco/layout/LeftAndRight",
+        config: {
+            widgetsLeft: [{
+                id: "FCTSRCH_TOP_MENU_VERTICAL",
+                name: "alfresco\/layout\/VerticalWidgets",
                 config: {
-                    loadDataPublishTopic: "ALF_CLIPBOARD_GET",
-                    reloadDataTopic: "ALF_CLIPBOARD_CHANGED",
+                    widgets: [topMenu, searchForm]
+                }
+            }],
+            widgetsRight: [{
+                id: "CLIPBOARD_WINDOW",
+                name: "alfresco/layout/ClassicWindow",
+                config: {
+                    title: msg.get("header.clipboard"),
                     widgets: [{
-                        name: "alfresco/lists/views/AlfListView",
+                        name: "alfresco\/lists\/AlfList",
                         config: {
+                            loadDataPublishTopic: "ALF_CLIPBOARD_GET",
+                            reloadDataTopic: "ALF_CLIPBOARD_CHANGED",
                             widgets: [{
-                                name: "alfresco/lists/views/layouts/Row",
+                                name: "alfresco/lists/views/AlfListView",
                                 config: {
-                                    widgets: [propertyCell, deleteActionCell]
+                                    widgets: [{
+                                        name: "alfresco/lists/views/layouts/Row",
+                                        config: {
+                                            widgets: [propertyCell, deleteActionCell]
+                                        }
+                                    }]
                                 }
                             }]
                         }
@@ -130,5 +136,4 @@ if (pageVertical != undefined) {
             }]
         }
     });
-
 }

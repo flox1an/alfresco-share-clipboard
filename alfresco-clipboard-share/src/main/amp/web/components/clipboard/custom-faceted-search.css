@@ -1,0 +1,8 @@
+
+#CLIPBOARD_WINDOW.alfresco-layout-ClassicWindow > div.content {
+  padding: 0px;
+}
+
+#CLIPBOARD_WINDOW .alfresco-lists-views-AlfListView > table > tbody > tr > td {
+  padding: 0px 10px 0px 0;
+}
