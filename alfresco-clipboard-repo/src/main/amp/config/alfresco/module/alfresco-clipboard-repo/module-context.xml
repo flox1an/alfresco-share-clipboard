@@ -18,5 +18,14 @@
 <!DOCTYPE beans PUBLIC '-//SPRING//DTD BEAN//EN' 'http://www.springframework.org/dtd/spring-beans.dtd'>
 
 <beans>
-
+	<bean id="webscript.org.alfresco.slingshot.documentlibrary.action.send-content-as-mail.post" class="org.alfresco.slingshot.documentlibrary.action.SendContentMailPost" parent="webscript">
+		<property name="nodeService" ref="nodeService" />
+		<property name="personService" ref="personService" />
+		<property name="mailService" ref="mailService" />
+		<property name="serviceRegistry" ref="ServiceRegistry"/>
+		<property name="sysAdminParams" ref="sysAdminParams"/>
+		<property name="siteService" ref="siteService"/>
+		<property name="attachmentSizeLimit" value="${attachment.size.limit}"/>
+		
+	</bean>
 </beans>

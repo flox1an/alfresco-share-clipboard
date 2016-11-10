@@ -1,0 +1,8 @@
+<webscript>
+   <shortname>Send content as Mail</shortname>
+   <description>Send node content as mail attachement</description>
+   <url>/sendMail</url>
+   <format default="json">argument</format>
+   <authentication>user</authentication>
+   <transaction allow="readonly">required</transaction>
+</webscript>
