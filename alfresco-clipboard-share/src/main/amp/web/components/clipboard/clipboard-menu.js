@@ -25,39 +25,39 @@
        */
       onReady: function Clipboard_onReady()
       {
-    	  
+
           var container = YAHOO.util.Selector.query(".header-bar")[0];
-          var menu = ([ 
+          var menu = ([
                        { text : this.msg("clipboard.action.copy.here"), classname: "clipboard-copy", onclick : { fn: this.onCopyHere, scope: this } },
                        { text : this.msg("clipboard.action.link.here"), classname: "clipboard-link", onclick : { fn: this.onLinkHere, scope: this } },
                        { text : this.msg("clipboard.action.move.here"), classname: "clipboard-move", onclick : { fn: this.onMoveHere, scope: this } },
                        { text : this.msg("clipboard.action.download"), classname: "clipboard-download", onclick : { fn: this.onDownloadClipboard, scope: this } },
-                       { text : this.msg("clipboard.action.clear"), classname: "clipboard-clear", onclick : { fn: this.onClearClipboard, scope: this } }
+                       { text : this.msg("action.clipboard.clear"), classname: "clipboard-clear", onclick : { fn: this.onClearClipboard, scope: this } }
           	 ]);
-          
+
           this.widgets.clipboardButton = new YAHOO.widget.Button(
                    { id: container.id+"-clipboard",
                      type: "menu",
                       label: this.msg("button.label.clipboard"),
                       menu: menu,
-                      lazyloadmenu: true, 
+                      lazyloadmenu: true,
                       container: container.id
-                   });      	  
+                   });
           this.widgets.clipboardButton.addClass("clipboard-menu");
-          
+
           YAHOO.Bubbling.subscribe("clipboardChanged", function(layer, args) {
         	  this.updateButtonState();
           }, this);
-          
+
           this.updateButtonState();
-          
+
       },
-      
+
       updateButtonState : function ClipboardMenu_updateButtonState() {
     	  var clip = new Alfresco.service.Clipboard();
     	  var clipsize = clip.getAll().length;
     	  this.widgets.clipboardButton.set('disabled', clipsize == 0);
-    	  
+
     	 if (clipsize == 0) {
     		 this.widgets.clipboardButton.set("label", this.msg("button.label.clipboard"));
     	 }
@@ -65,55 +65,55 @@
     		 this.widgets.clipboardButton.set("label", this.msg("button.label.clipboard") + " (" + clipsize + ")");
     	 }
       },
-      
+
       onCopyHere : function ClipboardMenu_onCopyHere() {
     	  this._copyOrMove({mode: "copy"});
       },
-      
+
       onLinkHere : function ClipboardMenu_onLinkHere() {
     	  this._copyOrMove({mode: "link"});
       },
-      
+
       onMoveHere : function ClipboardMenu_onMoveHere() {
     	   this._copyOrMove({mode: "move"});
       },
-      
+
       onDownloadClipboard : function ClipboardMenu_onDownloadClipboard() {
     	  var downloadDialog = Alfresco.getArchiveAndDownloadInstance(),
           config = { nodesToArchive: [] };
     	  var clipboardService = new Alfresco.service.Clipboard();
-  		
+
 	  	 var nodes = clipboardService.getAll();
 	  		for (var i = 0; i < nodes.length; i++){
 	  			 config.nodesToArchive.push({"nodeRef": nodes[i].nodeRef})
 	  		}
-	     
+
 	      downloadDialog.show(config);
       },
-      
+
       onClearClipboard : function ClipboardMenu_onClearClipboard() {
     	  var clip = new Alfresco.service.Clipboard();
     	  clip.removeAll();
       },
-      
+
       _copyOrMove : function ClipboardMenu__copyOrMove(action) {
-    	  
+
     	var mode = action.mode;
-	
+
 	    Alfresco.util.PopupManager.displayMessage(
         {
            text: this.msg("message.clipboard."+mode)
         });
-	    
+
 		//get clipboard contents
 		var clipboardService = new Alfresco.service.Clipboard();
-		
+
 		var nodes = clipboardService.getAll();
 		var nodeRefs = [];
 		for (var i = 0; i < nodes.length; i++){
 			nodeRefs.push(nodes[i].nodeRef);
 		}
-		
+
 		// Failure callback function
 	    var fnFailure = function ASCCOM__onOK_failure(p_data)
 	    {
@@ -122,7 +122,7 @@
 	          text: this.msg("message.failure")
 	       });
 	    };
-	    
+
 	    // Success callback function
 	    var fnSuccess = function ASCCOM__onOK_success(p_data)
 	    {
@@ -130,14 +130,14 @@
 	       {
 	          text: this.msg("message.success")
 	       });
-	       
+
 	       YAHOO.Bubbling.fire("metadataRefresh");
 	    };
-		
+
 		var doclist = Alfresco.util.ComponentManager.find({name : "Alfresco.DocumentList"})[0];
-		
+
 		var folderRef = new Alfresco.util.NodeRef(doclist.doclistMetadata.parent.nodeRef);
-		
+
 		// Construct the data object for the genericAction call
 	    doclist.modules.actions.genericAction(
 	    {
@@ -180,7 +180,7 @@
 	       }
 	    });
 	}
-            
+
    });
-   
+
 })();
