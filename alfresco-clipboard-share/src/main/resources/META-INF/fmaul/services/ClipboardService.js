@@ -1,10 +1,12 @@
 define(["dojo/_base/declare",
         "alfresco/services/BaseService",
         "alfresco/core/Core",
-        "dojo/_base/lang"
+        "dojo/_base/lang",
+        "alfresco/core/CoreXhr",
+        "service/constants/Default"
     ],
-    function(declare, BaseService, Core, lang) {
-        return declare([BaseService, Core], {
+    function(declare, BaseService, Core, lang, AlfCoreXhr, AlfConstants) {
+        return declare([BaseService, Core, AlfCoreXhr], {
 
             registerSubscriptions: function () {
                 this.clipboardService = new Alfresco.service.Clipboard();
@@ -13,6 +15,24 @@ define(["dojo/_base/declare",
                 this.alfSubscribe("ALF_CLIPBOARD_DELETE", lang.hitch(this, this._onClipboardDelete));
                 this.alfSubscribe("ALF_CLIPBOARD_ACTION_CLEAR", lang.hitch(this, this._onClipboardActionClear));
                 this.alfSubscribe("ALF_CLIPBOARD_ACTION_DOWNLOAD", lang.hitch(this, this._onClipboardActionDownload));
+                this.alfSubscribe("ALF_CLIPBOARD_ACTION_SEND_EMAIL", lang.hitch(this, this._onClipboardActionSendAsEmail));
+
+                // Clipboard initially if it is empty
+                this.updateClipboardVisibilty();
+            },
+
+            _onClipboardActionSendAsEmail: function(payload) {
+                console.log(payload);
+                // {"nodeRefs":[{"nodeRef":"workspace://SpacesStore/1a0b110f-1e09-4ca2-b367-fe25e4964a4e"}],"subject":"Alfresco Mail Share"}
+                this.serviceXhr({
+                  alfTopic: "ALF_CLIPBOARD_XHR_SEND_EMAIL",
+                  url: AlfConstants.PROXY_URI + 'sendMail',
+                  method: "POST",
+                  data: {
+                    nodeRefs: this.clipboardService.getAll(),
+                    subject: "Alfresco Mail Share"
+                  }
+                });
             },
 
             _onClipboardGet: function(payload) {
@@ -21,8 +41,8 @@ define(["dojo/_base/declare",
 
             _onClipboardActionClear: function(payload) {
                 this.clipboardService.removeAll();
-                this.alfPublish("ALF_CLIPBOARD_SHOW", { reveal: false });
                 this.alfPublish("ALF_CLIPBOARD_CHANGED");
+                this.updateClipboardVisibilty();
             },
 
             _onClipboardActionDownload: function(payload) {
@@ -32,11 +52,7 @@ define(["dojo/_base/declare",
             _onClipboardDelete: function(payload) {
               this.clipboardService.remove(payload.nodeRef);
               this.alfPublish("ALF_CLIPBOARD_CHANGED");
-
-              var entries = this.clipboardService.getAll();
-              if (entries && entries.length == 0) {
-                this.alfPublish("ALF_CLIPBOARD_SHOW", { reveal: false });
-              }
+              this.updateClipboardVisibilty();
             },
 
             _onPayloadReceive: function (payload) {
@@ -52,12 +68,18 @@ define(["dojo/_base/declare",
                   this.clipboardService.add(entry);
                   this.alfPublish("ALF_CLIPBOARD_CHANGED");
 
-                  var entries = this.clipboardService.getAll();
-                  if (entries && entries.length == 1) {
-                    this.alfPublish("ALF_CLIPBOARD_SHOW", { reveal: true });
-                  }
-
+                  this.updateClipboardVisibilty();
                 }
+            },
+
+            updateClipboardVisibilty: function() {
+              var entries = this.clipboardService.getAll();
+              if (entries && entries.length >= 1) {
+                this.alfPublish("ALF_CLIPBOARD_SHOW", { reveal: true });
+              }
+              if (!entries || entries.length == 0) {
+                this.alfPublish("ALF_CLIPBOARD_SHOW", { reveal: false });
+              }
             }
 
         });

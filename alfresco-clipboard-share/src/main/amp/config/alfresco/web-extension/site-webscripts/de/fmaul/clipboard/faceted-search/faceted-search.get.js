@@ -46,6 +46,17 @@ var deleteActionCell = {
     }
 };
 
+
+var showWhenClipboardNotEmpty = {
+    initialValue: true,
+    rules: [{
+        topic: "ALF_CLIPBOARD_SHOW",
+        attribute: "reveal",
+        is: [true],
+        strict: true
+    }]
+}
+
 var clipboardMenu = {
 
     id: "ALF_CLIPBOARD_POPUP_MENU",
@@ -63,11 +74,19 @@ var clipboardMenu = {
         }, {
             name: "alfresco/menus/AlfMenuItem",
             config: {
+                label: msg.get("action.clipboard.send.attachment"),
+                iconClass: "alf-social-email-icon",
+                publishTopic: "ALF_CLIPBOARD_ACTION_SEND_EMAIL"
+            }
+        },{
+            name: "alfresco/menus/AlfMenuItem",
+            config: {
                 label: msg.get("action.clipboard.clear"),
                 iconClass: "alf-delete-icon",
                 publishTopic: "ALF_CLIPBOARD_ACTION_CLEAR"
             }
-        }]
+        }],
+        visibilityConfig: showWhenClipboardNotEmpty
     }
 
 };
@@ -106,15 +125,7 @@ if (pageVertical != undefined) {
                             }]
                         }
                     }],
-                    visibilityConfig: {
-                        initialValue: true,
-                        rules: [{
-                            topic: "ALF_CLIPBOARD_SHOW",
-                            attribute: "reveal",
-                            is: [true],
-                            strict: true
-                        }]
-                    }
+                    visibilityConfig: showWhenClipboardNotEmpty
                 }
             }]
         }
