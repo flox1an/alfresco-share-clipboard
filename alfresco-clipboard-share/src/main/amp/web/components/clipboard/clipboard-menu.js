@@ -22,67 +22,76 @@
          */
         onReady: function Clipboard_onReady() {
 
-            var container = YAHOO.util.Selector.query(".header-bar")[0];
-            var menu = ([{
-                text: this.msg("clipboard.action.copy.here"),
-                classname: "clipboard-copy",
-                onclick: {
-                    fn: this.onCopyHere,
-                    scope: this
-                }
-            }, {
-                text: this.msg("clipboard.action.link.here"),
-                classname: "clipboard-link",
-                onclick: {
-                    fn: this.onLinkHere,
-                    scope: this
-                }
-            }, {
-                text: this.msg("clipboard.action.move.here"),
-                classname: "clipboard-move",
-                onclick: {
-                    fn: this.onMoveHere,
-                    scope: this
-                }
-            }, {
-                text: this.msg("clipboard.action.download"),
-                classname: "clipboard-download",
-                onclick: {
-                    fn: this.onDownloadClipboard,
-                    scope: this
-                }
-            }, {
-                text: this.msg("clipboard.action.send.attachment"),
-                classname: "clipboard-send-attachment",
-                onclick: {
-                    fn: this.onSendAttachment,
-                    scope: this
-                }
-            }, {
-                text: this.msg("action.clipboard.clear"),
-                classname: "clipboard-clear",
-                onclick: {
-                    fn: this.onClearClipboard,
-                    scope: this
-                }
-            }]);
+          YAHOO.Bubbling.on("doclistMetadata", this.onDoclistMetadata, this);
 
-            this.widgets.clipboardButton = new YAHOO.widget.Button({
-                id: container.id + "-clipboard",
-                type: "menu",
-                label: this.msg("button.label.clipboard"),
-                menu: menu,
-                lazyloadmenu: true,
-                container: container.id
-            });
-            this.widgets.clipboardButton.addClass("clipboard-menu");
+        },
 
-            YAHOO.Bubbling.subscribe("clipboardChanged", function(layer, args) {
-                this.updateButtonState();
-            }, this);
+        onDoclistMetadata: function Clipboard_doclistMetadata() {
+            if (!this.initialzed) {
 
-            this.updateButtonState();
+              var container = YAHOO.util.Selector.query(".header-bar")[0];
+              var menu = ([{
+                  text: this.msg("clipboard.action.copy.here"),
+                  classname: "clipboard-copy",
+                  onclick: {
+                      fn: this.onCopyHere,
+                      scope: this
+                  }
+              }, {
+                  text: this.msg("clipboard.action.link.here"),
+                  classname: "clipboard-link",
+                  onclick: {
+                      fn: this.onLinkHere,
+                      scope: this
+                  }
+              }, {
+                  text: this.msg("clipboard.action.move.here"),
+                  classname: "clipboard-move",
+                  onclick: {
+                      fn: this.onMoveHere,
+                      scope: this
+                  }
+              }, {
+                  text: this.msg("clipboard.action.download"),
+                  classname: "clipboard-download",
+                  onclick: {
+                      fn: this.onDownloadClipboard,
+                      scope: this
+                  }
+              }, {
+                  text: this.msg("clipboard.action.send.attachment"),
+                  classname: "clipboard-send-attachment",
+                  onclick: {
+                      fn: this.onSendAttachment,
+                      scope: this
+                  }
+              }, {
+                  text: this.msg("action.clipboard.clear"),
+                  classname: "clipboard-clear",
+                  onclick: {
+                      fn: this.onClearClipboard,
+                      scope: this
+                  }
+              }]);
 
+              this.widgets.clipboardButton = new YAHOO.widget.Button({
+                  id: container.id + "-clipboard",
+                  type: "menu",
+                  label: this.msg("button.label.clipboard"),
+                  menu: menu,
+                  lazyloadmenu: true,
+                  container: container.id
+              });
+              this.widgets.clipboardButton.addClass("clipboard-menu");
+
+              YAHOO.Bubbling.subscribe("clipboardChanged", function(layer, args) {
+                  this.updateButtonState();
+              }, this);
+
+              this.updateButtonState();
+
+              this.initialzed = true;
+            }
         },
 
         updateButtonState: function ClipboardMenu_updateButtonState() {

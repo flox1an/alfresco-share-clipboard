@@ -17,6 +17,7 @@ define(["dojo/_base/declare",
                 this.alfSubscribe("ALF_CLIPBOARD_ACTION_DOWNLOAD", lang.hitch(this, this._onClipboardActionDownload));
                 this.alfSubscribe("ALF_CLIPBOARD_ACTION_SEND_EMAIL", lang.hitch(this, this._onClipboardActionSendAsEmail));
 
+
                 // Clipboard initially if it is empty
                 this.updateClipboardVisibilty();
             },
@@ -40,17 +41,6 @@ define(["dojo/_base/declare",
                       items: this.clipboardService.getAll()
                   }
               });
-              /*
-              Create a dialog containing either widgets or text with and configurable buttons.
-              Properties:
-              Name	Type	Argument	Default	Description
-              dialogTitle	string			The text to set in the dialog title bar
-              dialogId	string	<optional>
-              null	The ID of the dialog to display. Only one dialog with no dialogId can exist on a page at a time, therefore it is sensible to always include an id for your dialogs to allow stacking.
-              duration	number	<optional>
-              0	The duration of the fade effect when showing or hiding the dialog
-              textContent
-              */
             },
 
             _onClipboardGet: function(payload) {

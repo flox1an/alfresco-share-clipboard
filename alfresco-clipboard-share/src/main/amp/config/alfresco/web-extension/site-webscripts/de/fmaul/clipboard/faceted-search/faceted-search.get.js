@@ -1,3 +1,7 @@
+model.jsonModel.services.push("fmaul/services/ClipboardService");
+
+// --- custom action in search result documnt actions ---
+
 var searchResultPage = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_RESULT");
 
 if (searchResultPage != null) {
@@ -8,15 +12,7 @@ if (searchResultPage != null) {
     }
 }
 
-model.jsonModel.services.push("fmaul/services/ClipboardService");
-
-var pageVertical = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_MAIN_VERTICAL_STACK");
-
-var topMenu = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_TOP_MENU_BAR");
-var searchForm = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_FORM");
-widgetUtils.deleteObjectFromArray(model.jsonModel.widgets, "id", "FCTSRCH_TOP_MENU_BAR");
-widgetUtils.deleteObjectFromArray(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_FORM");
-
+// --- custom clipboard menu in the top right ---
 
 var propertyCell = {
     name: "alfresco/lists/views/layouts/Cell",
@@ -57,7 +53,6 @@ var showWhenClipboardNotEmpty = {
 }
 
 var clipboardMenu = {
-
     id: "ALF_CLIPBOARD_POPUP_MENU",
     name: "alfresco/menus/AlfMenuBarPopup",
     config: {
@@ -87,16 +82,23 @@ var clipboardMenu = {
         }],
         visibilityConfig: showWhenClipboardNotEmpty
     }
-
 };
 
 var searchMenuBar = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_LIST_MENU_BAR");
 
-if (searchMenuBar != null) {
+if (searchMenuBar) {
     searchMenuBar.config.widgets.unshift(clipboardMenu);
 }
 
-if (pageVertical != undefined) {
+// --- custom list of currently saved clipboard items ---
+
+var pageVertical = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_MAIN_VERTICAL_STACK");
+var topMenu = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_TOP_MENU_BAR");
+var searchForm = widgetUtils.findObject(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_FORM");
+widgetUtils.deleteObjectFromArray(model.jsonModel.widgets, "id", "FCTSRCH_TOP_MENU_BAR");
+widgetUtils.deleteObjectFromArray(model.jsonModel.widgets, "id", "FCTSRCH_SEARCH_FORM");
+
+if (pageVertical) {
     pageVertical.config.widgets.splice(2, 0, {
         id: "FCTSRCH_TOP_MENU_HORIZONTAL",
         name: "alfresco/layout/LeftAndRight",
