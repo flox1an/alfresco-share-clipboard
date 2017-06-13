@@ -15,6 +15,28 @@
         }
     });
     
+
+    YAHOO.Bubbling.fire("registerAction",
+    {
+        actionName: "onActionClipboardAddDocuments",
+        fn: function ASC_onActionClipboardAddDocuments(files) {
+        	if (files.length != undefined) {
+			    for ( var i = 0; i < files.length; i++) {
+        	      	
+		        	var entry = {};
+		        	entry.nodeRef = files[i].nodeRef;
+		        	entry.name = files[i].displayName;
+		        	entry.title = entry.name;
+		        	
+		        	var clip = new Alfresco.service.Clipboard();
+		        	clip.add(entry);
+		        }
+		    }
+        
+        }
+    });
+
+    
     YAHOO.Bubbling.fire("registerAction",
     {
         actionName: "onActionClipboardCopyHere",
