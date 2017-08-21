@@ -42,3 +42,8 @@ background-position: 6px 4px;
 background-repeat: no-repeat;
 padding-left: 16px;   
 }
+
+.toolbar .onActionClipboardAddDocuments
+{
+  background-image: url(../documentlibrary/actions/add-to-clipboard-16.png);
+}
