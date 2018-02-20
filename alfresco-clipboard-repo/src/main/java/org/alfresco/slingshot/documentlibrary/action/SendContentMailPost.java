@@ -45,6 +45,7 @@ import org.springframework.extensions.webscripts.Status;
 import org.springframework.extensions.webscripts.WebScriptException;
 import org.springframework.extensions.webscripts.WebScriptRequest;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.extensions.webscripts.Cache;
 
 public class SendContentMailPost extends DeclarativeWebScript {
 	
@@ -99,7 +100,7 @@ public class SendContentMailPost extends DeclarativeWebScript {
 	}
 
 	@Override
-	protected Map<String, Object> executeImpl(WebScriptRequest req, Status status) {
+	protected Map<String, Object> executeImpl(WebScriptRequest req, Status status, Cache cache) {
 		int responseStatus = 0;
 		String message = "";
 		try {
