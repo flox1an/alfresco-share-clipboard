@@ -4,11 +4,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import javax.activation.DataHandler;
 import javax.activation.MimetypesFileTypeMap;
@@ -49,7 +45,7 @@ import org.springframework.extensions.webscripts.Cache;
 
 public class SendContentMailPost extends DeclarativeWebScript {
 	
-	private String mailSubject = "Alfresco Mail Share";
+	private String defaultMailSubject = "Alfresco Mail Share";
 	
 	private int attachmentSizeLimit; 
 
@@ -104,8 +100,12 @@ public class SendContentMailPost extends DeclarativeWebScript {
 		int responseStatus = 0;
 		String message = "";
 		try {
-			List<NodeRef> nodeRefs = getNodeRefsFromRequest(req);
-			sendMail(nodeRefs);
+			JSONObject payload = getPayloadFromRequest(req);
+			List<NodeRef> nodeRefs = getNodeRefsFromPayload(payload);
+            Set<String> emails = getEmailsFromPayload(payload);
+            String subject = getSubjectFromPayload(payload);
+            boolean attachDocuments = getAttachDocumentsFromPayload(payload);
+			sendMail(nodeRefs, emails, subject, attachDocuments);
 		} catch (WebScriptException ex) {
 			responseStatus = ex.getStatus();
 			message = ex.getMessage();
@@ -125,33 +125,57 @@ public class SendContentMailPost extends DeclarativeWebScript {
 		return model;
 	}
 
-	private List<NodeRef> getNodeRefsFromRequest(WebScriptRequest req) {
+	private boolean getAttachDocumentsFromPayload(JSONObject payload) {
+		if (payload.containsKey("attachDocuments")) {
+			return (boolean) payload.get("attachDocuments");
+		}
+		return false;
+	}
 
-		JSONArray json = null;
+	private String getSubjectFromPayload(JSONObject payload) {
+		if (payload.containsKey("subject")) {
+			return (String) payload.get("subject");
+		}
+		return defaultMailSubject;
+	}
+
+	private Set<String> getEmailsFromPayload(JSONObject payload) {
+		PersonService personService = serviceRegistry.getPersonService();
+	    Set<String> result = new HashSet<String>();
+
+	    if (payload.containsKey("users")){
+	    	JSONArray users = (JSONArray) payload.get("users");
+	    	for (int i = 0; i < users.size(); i++) {
+				result.add((String) nodeService.getProperty(personService.getPerson((String) users.get(i)), ContentModel.PROP_EMAIL));
+			}
+		}
+	    if (payload.containsKey("emails")){
+	    	JSONArray emails = (JSONArray) payload.get("emails");
+	    	for (int i = 0; i < emails.size(); i++) {
+	    		result.add((String) emails.get(i));
+			}
+		}
+		// Always send to the currently authenticated user as well
+		String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+		NodeRef person = personService.getPerson(fullyAuthenticatedUser, false);
+		result.add((String) nodeService.getProperty(person, ContentModel.PROP_EMAIL));
+
+
+        return result;
+    }
+
+    private JSONObject getPayloadFromRequest(WebScriptRequest req){
 		String contentType = req.getContentType();
 		if (contentType != null && contentType.indexOf(';') != -1) {
 			contentType = contentType.substring(0, contentType.indexOf(';'));
 		}
 
-		List<NodeRef> nodes = new LinkedList<NodeRef>();
+
 		if (MimetypeMap.MIMETYPE_JSON.equals(contentType)) {
 			JSONParser parser = new JSONParser();
 			try {
 				JSONObject jsonObj = new JSONObject();
-				jsonObj = (JSONObject) parser.parse(req.getContent().getContent());
-				json = (JSONArray) jsonObj.get("nodeRefs");
-				// json = (JSONArray)
-				// parser.parse(req.getContent().getContent());
-				for (int i = 0; i < json.size(); i++) {
-					JSONObject obj = (JSONObject) json.get(i);
-					String nodeRefString = (String) obj.get("nodeRef");
-					if (nodeRefString != null) {
-						if (serviceRegistry.getNodeService().exists(new NodeRef(nodeRefString)) == true) {
-							nodes.add(new NodeRef(nodeRefString));
-						}
-					}
-				}
-				mailSubject = (String) jsonObj.get("subject");
+				return (JSONObject) parser.parse(req.getContent().getContent());
 			} catch (IOException io) {
 				// Unexpected IOException
 				throw new WebScriptException(Status.STATUS_INTERNAL_SERVER_ERROR, "unknown-error", io);
@@ -160,13 +184,29 @@ public class SendContentMailPost extends DeclarativeWebScript {
 				throw new WebScriptException(Status.STATUS_BAD_REQUEST, "unknown-error", je);
 			}
 		}
+		throw new WebScriptException(Status.STATUS_BAD_REQUEST, "json.payload.not-found");
+    }
+
+    private List<NodeRef> getNodeRefsFromPayload(JSONObject payload) {
+
+		JSONArray json = null;
+
+		json = (JSONArray) payload.get("nodeRefs");
+
+		List<NodeRef> nodes = new LinkedList<NodeRef>();
+		for (int i = 0; i < json.size(); i++) {
+			JSONObject obj = (JSONObject) json.get(i);
+			String nodeRefString = (String) obj.get("nodeRef");
+			if (nodeRefString != null) {
+				if (serviceRegistry.getNodeService().exists(new NodeRef(nodeRefString))) {
+					nodes.add(new NodeRef(nodeRefString));
+				}
+			}
+		}
 		return nodes;
 	}
 
-	private void sendMail(List<NodeRef> nodeRefs) {
-		String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
-		NodeRef person = personService.getPerson(fullyAuthenticatedUser, false);
-		String to = (String) nodeService.getProperty(person, ContentModel.PROP_EMAIL);
+	private void sendMail(List<NodeRef> nodeRefs, Set<String> emailsTo, String mailSubject, boolean attachDocuments) {
 
 		try {
 			// Create mail session
@@ -176,9 +216,14 @@ public class SendContentMailPost extends DeclarativeWebScript {
 
 			// Define message
 			MimeMessage message = mailService.createMimeMessage();
-			String fromAddress = to;
+			String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
+			NodeRef person = personService.getPerson(fullyAuthenticatedUser, false);
+			// Always use currently authenticated user as sender
+			String fromAddress = (String) nodeService.getProperty(person, ContentModel.PROP_EMAIL);
 			message.setFrom(new InternetAddress(fromAddress));
-			message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			for (String to : emailsTo) {
+				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
+			}
 			message.setSubject(mailSubject);
 
 			// Create the message part with body text
@@ -187,45 +232,47 @@ public class SendContentMailPost extends DeclarativeWebScript {
 			messageBodyPart.setText(messageBodyText);
 			Multipart multipart = new MimeMultipart();
 			multipart.addBodyPart(messageBodyPart);
-			float totalFileSize = 0;
-			// Create the Attachment part
-			for (NodeRef actionedUponNodeRef : nodeRefs) {
-				// Get document filename
-				Serializable filename = serviceRegistry.getNodeService().getProperty(actionedUponNodeRef,
-						ContentModel.PROP_NAME);
-				if (filename == null) {
-					throw new AlfrescoRuntimeException("Document filename is null");
+			if (attachDocuments) {
+				float totalFileSize = 0;
+				// Create the Attachment part
+				for (NodeRef actionedUponNodeRef : nodeRefs) {
+					// Get document filename
+					Serializable filename = serviceRegistry.getNodeService().getProperty(actionedUponNodeRef,
+							ContentModel.PROP_NAME);
+					if (filename == null) {
+						throw new AlfrescoRuntimeException("Document filename is null");
+					}
+					String documentName = (String) filename;
+
+					// Get the document content bytes
+					byte[] documentData = getDocumentContentBytes(actionedUponNodeRef, documentName);
+					if (documentData == null) {
+						throw new AlfrescoRuntimeException("Document content is null");
+					}
+
+					// get file size
+					ContentData content = (ContentData) serviceRegistry.getNodeService().getProperty(actionedUponNodeRef,
+							ContentModel.PROP_CONTENT);
+					float currentFileSizeBytes = content.getSize();
+					float currentFileSizeMBytes = (currentFileSizeBytes / 1024) / 1024;
+					totalFileSize += currentFileSizeMBytes;
+
+					// Attach document
+					messageBodyPart = new MimeBodyPart();
+					messageBodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource(documentData,
+							new MimetypesFileTypeMap().getContentType(documentName))));
+					messageBodyPart.setFileName(documentName);
+					multipart.addBodyPart(messageBodyPart);
 				}
-				String documentName = (String) filename;
-
-				// Get the document content bytes
-				byte[] documentData = getDocumentContentBytes(actionedUponNodeRef, documentName);
-				if (documentData == null) {
-					throw new AlfrescoRuntimeException("Document content is null");
+				// Check for file size limit
+				if (totalFileSize > attachmentSizeLimit) {
+					throw new WebScriptException(Status.STATUS_BAD_REQUEST, "too-big".toString());
 				}
-
-				// get file size
-				ContentData content = (ContentData) serviceRegistry.getNodeService().getProperty(actionedUponNodeRef,
-						ContentModel.PROP_CONTENT);
-				float currentFileSizeBytes = content.getSize();
-				float currentFileSizeMBytes = (currentFileSizeBytes / 1024) / 1024;
-				totalFileSize += currentFileSizeMBytes;
-
-				// Attach document
-				messageBodyPart = new MimeBodyPart();
-				messageBodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource(documentData,
-						new MimetypesFileTypeMap().getContentType(documentName))));
-				messageBodyPart.setFileName(documentName);
-				multipart.addBodyPart(messageBodyPart);
-			}
-			// Check for file size limit
-			if (totalFileSize > attachmentSizeLimit) {
-				throw new WebScriptException(Status.STATUS_BAD_REQUEST, "too-big".toString());
 			}
 			// Put parts in message
 			message.setContent(multipart);
 			mailService.send(message);
-			logger.debug("Send email with content to " + to);
+			logger.debug("Sent email to " + emailsTo);
 		} catch (MessagingException me) {
 			throw new AlfrescoRuntimeException("Could not send email: " + me.getMessage());
 		}
@@ -236,9 +283,10 @@ public class SendContentMailPost extends DeclarativeWebScript {
 		for (NodeRef actionedUponNodeRef : nodeRefs) {
 			bodyText.append(nodeService.getProperty(actionedUponNodeRef, ContentModel.PROP_NAME) + "\n");
 			// TODO do we need the port in prod?
+			String siteShortName = siteService.getSiteShortName(actionedUponNodeRef);
 			bodyText.append(sysAdminParams.getAlfrescoProtocol() + "://" + sysAdminParams.getAlfrescoHost() + ":"
-					+ sysAdminParams.getAlfrescoPort() + "/share/page/site/"
-					+ siteService.getSiteShortName(actionedUponNodeRef) + "/document-details?nodeRef="
+					+ sysAdminParams.getAlfrescoPort() + "/share"+((siteShortName == null)?"":"/page/site/"
+					+ siteShortName) + "/document-details?nodeRef="
 					+ actionedUponNodeRef.getStoreRef() + "/" + actionedUponNodeRef.getId() + "\n\n");
 		}
 		return bodyText.toString();
