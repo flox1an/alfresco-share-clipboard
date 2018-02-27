@@ -69,4 +69,29 @@
         <action type="action-link" id="onActionClipboardAddDocuments" asset="document" label="action.clipboard.add.document" />
       </multi-select>
     </config>
+	<config evaluator="string-compare"
+			condition="mail">
+		<forms id="send-clipboard-items">
+			<form>
+				<field-visibility>
+					<show id="users"/>
+					<show id="emails"/>
+                    <show id="subject"/>
+                    <show id="attachDocuments"/>
+				</field-visibility>
+				<appearance>
+					<field id="users" label-id="clipboard.sendAsEmail.form.field.users">
+						<control template="/org/alfresco/components/form/controls/cb-to-users-picker.ftl"/>
+                    </field>
+					<field id="emails" label-id="clipboard.sendAsEmail.form.field.emails">
+						<control template="/org/alfresco/components/form/controls/textarea.ftl" />
+					</field>
+                    <field id="subject" label-id="clipboard.sendAsEmail.form.field.subject" mandatory="false"/>
+					<field id="attachDocuments" label-id="clipboard.sendAsEmail.form.field.attachDocuments">
+						<control template="/org/alfresco/components/form/controls/checkbox.ftl" />
+					</field>
+				</appearance>
+			</form>
+		</forms>
+	</config>
 </alfresco-config>

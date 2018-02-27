@@ -150,69 +150,95 @@
             var clipboardService = new Alfresco.service.Clipboard();
             var nodeRefs = [];
             var nodes = clipboardService.getAll();
+            var titles = [];
             for (var i = 0; i < nodes.length; i++) {
                 nodeRefs.push({
                     "nodeRef": nodes[i].nodeRef
                 });
+                if (i<3){
+                    // Add clipboard item title
+                    titles.push(nodes[i].title);
+                }else if (i==3){
+                    titles.push("...");
+                }
             }
-            // Failure callback function
-            var fnFailure = function _onSendAttachment_onOK_failure(p_data) {
-                if (p_data.json.message) {
-                    Alfresco.util.PopupManager.displayMessage({
-                        text: this.msg("message.failure" + "." + p_data.json.message)
-                    });
-                } else {
-                    Alfresco.util.PopupManager.displayMessage({
-                        text: this.msg("message.failure")
-                    });
-                }
+            var scope = this;
+
+            // Intercept before dialog show
+            var doBeforeDialogShow = function ClipboardMenu_onSendAttachment_doBeforeDialogShow(p_form, p_dialog)
+            {
+               // Dialog title
+               var fileSpan = '<span class="light">' + $html(titles.join(", ")) + '</span>';
+               Alfresco.util.populateHTML(
+                  [ p_dialog.id + "-form-container_h", scope.msg("clipboard.action.send.attachment") + ": " + fileSpan ]
+               );
+               Alfresco.util.populateHTML(
+                  [ p_dialog.id + "-form-submit-button", scope.msg("clipboard.action.send.attachment") ]
+               );
+               Dom.get(p_dialog.id + "_prop_subject").value = scope.msg("message.mail.subject");
             };
 
-            // Success callback function
-            var fnSuccess = function _onSendAttachment_onOK_success(p_data) {
-                Alfresco.util.PopupManager.displayMessage({
-                    text: this.msg("message.success")
-                });
-
-                YAHOO.Bubbling.fire("metadataRefresh");
-            };
-
-            var doclist = Alfresco.util.ComponentManager.find({
-                name: "Alfresco.DocumentList"
-            })[0];
-
-            var folderRef = new Alfresco.util.NodeRef(doclist.doclistMetadata.parent.nodeRef);
-
-            // Construct the data object for the genericAction call
-            doclist.modules.actions.genericAction({
-                success: {
-                    callback: {
-                        fn: fnSuccess,
-                        scope: this
-                    }
-                },
-                failure: {
-                    callback: {
-                        fn: fnFailure,
-                        scope: this
-                    }
-                },
-                webscript: {
-                    method: Alfresco.util.Ajax.POST,
-                    name: "sendMail",
-                    stem: Alfresco.constants.PROXY_URI
-                },
-                wait: {
-                    message: this.msg("message.please-wait")
-                },
-                config: {
-                    requestContentType: Alfresco.util.Ajax.JSON,
-                    dataObj: {
-                        nodeRefs: nodeRefs,
-                        subject: this.msg("message.mail.subject")
-                    }
-                }
+            var templateUrl = YAHOO.lang.substitute(Alfresco.constants.URL_SERVICECONTEXT + "components/form?itemKind={itemKind}&itemId={itemId}&submitType={submitType}&formId={formId}&showCancelButton=true",
+            {
+               itemKind: "action",
+               itemId: "mail",
+               formId: "send-clipboard-items",
+               submitType: "json"
             });
+            // Using Forms Service, so always create new instance
+            var sendClipboardItemsDetails = new Alfresco.module.SimpleDialog(this.id + "-sendClipboardItemsDetails-" + Alfresco.util.generateDomId());
+            sendClipboardItemsDetails.setOptions(
+            {
+               width: "auto",
+               zIndex: 1001, // This needs to be high so it works in full screen mode
+               templateUrl: templateUrl,
+               actionUrl: Alfresco.constants.PROXY_URI+"sendMail",
+               destroyOnHide: true,
+               doBeforeDialogShow:
+               {
+                  fn: doBeforeDialogShow,
+                  scope: this
+               },
+               doBeforeAjaxRequest:
+               {
+                   fn: function(form, obj)
+                   {
+                       form.dataObj.nodeRefs = obj;
+                       return true;
+                   },
+                   obj: nodeRefs,
+                   scope: this
+               },
+               onSuccess:
+               {
+                  fn: function dlA_onActionDetails_success(response)
+                  {
+                      Alfresco.util.PopupManager.displayMessage({
+                          text: this.msg("message.success")
+                      });
+
+                      YAHOO.Bubbling.fire("metadataRefresh");
+                      sendClipboardItemsDetails.hide();
+                  },
+                  scope: this
+               },
+               onFailure:
+               {
+                  fn: function dLA_onActionDetails_failure(p_data)
+                  {
+                       if (p_data.json.message) {
+                           Alfresco.util.PopupManager.displayMessage({
+                               text: this.msg("message.failure" + "." + p_data.json.message)
+                           });
+                       } else {
+                           Alfresco.util.PopupManager.displayMessage({
+                               text: this.msg("message.failure")
+                           });
+                       }
+                  },
+                  scope: this
+               }
+             }).show();
 
         },
 
