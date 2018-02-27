@@ -127,7 +127,7 @@ public class SendContentMailPost extends DeclarativeWebScript {
 
 	private boolean getAttachDocumentsFromPayload(JSONObject payload) {
 		if (payload.containsKey("attachDocuments")) {
-			return (boolean) payload.get("attachDocuments");
+			return payload.get("attachDocuments").toString().equalsIgnoreCase("true");
 		}
 		return false;
 	}
@@ -135,6 +135,8 @@ public class SendContentMailPost extends DeclarativeWebScript {
 	private String getSubjectFromPayload(JSONObject payload) {
 		if (payload.containsKey("subject")) {
 			return (String) payload.get("subject");
+		}else if (payload.containsKey("prop_subject")) {
+			return (String) payload.get("prop_subject");
 		}
 		return defaultMailSubject;
 	}
@@ -146,25 +148,42 @@ public class SendContentMailPost extends DeclarativeWebScript {
 	    if (payload.containsKey("users")){
 	    	JSONArray users = (JSONArray) payload.get("users");
 	    	for (int i = 0; i < users.size(); i++) {
-				result.add((String) nodeService.getProperty(personService.getPerson((String) users.get(i)), ContentModel.PROP_EMAIL));
+				NodeRef personNode = personService.getPerson((String) users.get(i));
+				result.add(getEmailFromPersonNode(personNode));
+			}
+		}else if (payload.containsKey("users_added")){ // trying to make as little change as possible to the form-control used to enter users
+	    	String[] userNodes = payload.get("users_added").toString().split(",");
+	    	for (String userNodeStr : userNodes){
+	    		if (userNodeStr.isEmpty()){
+	    			continue;
+				}
+	    		result.add(getEmailFromPersonNode(new NodeRef(userNodeStr)));
 			}
 		}
 	    if (payload.containsKey("emails")){
-	    	JSONArray emails = (JSONArray) payload.get("emails");
-	    	for (int i = 0; i < emails.size(); i++) {
-	    		result.add((String) emails.get(i));
+	    	String[] emails = payload.get("emails").toString().split(",");
+	    	for (String email : emails) {
+				String trimmedEmail = email.trim();
+				if (trimmedEmail.isEmpty()) {
+					continue;
+				}
+				result.add(trimmedEmail);
 			}
 		}
 		// Always send to the currently authenticated user as well
 		String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
 		NodeRef person = personService.getPerson(fullyAuthenticatedUser, false);
-		result.add((String) nodeService.getProperty(person, ContentModel.PROP_EMAIL));
+		result.add(getEmailFromPersonNode(person));
 
 
         return result;
     }
 
-    private JSONObject getPayloadFromRequest(WebScriptRequest req){
+	private String getEmailFromPersonNode(NodeRef personNode) {
+		return (String) nodeService.getProperty(personNode, ContentModel.PROP_EMAIL);
+	}
+
+	private JSONObject getPayloadFromRequest(WebScriptRequest req){
 		String contentType = req.getContentType();
 		if (contentType != null && contentType.indexOf(';') != -1) {
 			contentType = contentType.substring(0, contentType.indexOf(';'));
@@ -219,7 +238,7 @@ public class SendContentMailPost extends DeclarativeWebScript {
 			String fullyAuthenticatedUser = AuthenticationUtil.getFullyAuthenticatedUser();
 			NodeRef person = personService.getPerson(fullyAuthenticatedUser, false);
 			// Always use currently authenticated user as sender
-			String fromAddress = (String) nodeService.getProperty(person, ContentModel.PROP_EMAIL);
+			String fromAddress = getEmailFromPersonNode(person);
 			message.setFrom(new InternetAddress(fromAddress));
 			for (String to : emailsTo) {
 				message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
