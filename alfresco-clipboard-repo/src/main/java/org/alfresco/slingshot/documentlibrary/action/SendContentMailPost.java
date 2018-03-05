@@ -303,10 +303,10 @@ public class SendContentMailPost extends DeclarativeWebScript {
 			bodyText.append(nodeService.getProperty(actionedUponNodeRef, ContentModel.PROP_NAME) + "\n");
 			// TODO do we need the port in prod?
 			String siteShortName = siteService.getSiteShortName(actionedUponNodeRef);
-			bodyText.append(sysAdminParams.getAlfrescoProtocol() + "://" + sysAdminParams.getAlfrescoHost() + ":"
-					+ sysAdminParams.getAlfrescoPort() + "/share"+((siteShortName == null)?"":"/page/site/"
-					+ siteShortName) + "/document-details?nodeRef="
-					+ actionedUponNodeRef.getStoreRef() + "/" + actionedUponNodeRef.getId() + "\n\n");
+			bodyText.append(sysAdminParams.getShareProtocol() + "://" + sysAdminParams.getShareHost() + ":"
+					+ sysAdminParams.getSharePort() + "/"+ sysAdminParams.getShareContext() +((siteShortName == null)?""
+					:"/page/site/" + siteShortName) + "/document-details?nodeRef=" + actionedUponNodeRef.getStoreRef() +
+					"/" + actionedUponNodeRef.getId() + "\n\n");
 		}
 		return bodyText.toString();
 	}
